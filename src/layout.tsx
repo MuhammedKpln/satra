@@ -40,9 +40,7 @@ function AppLayout(): JSX.Element {
   }, [loginState]);
 
   const changeLang = useCallback((key: Key) => {
-    if (key != undefined) {
-      i18n.changeLanguage(key as string);
-    }
+    i18n.changeLanguage(key as string);
   }, []);
 
   const userActions = useCallback((key: Key) => {
@@ -77,8 +75,8 @@ function AppLayout(): JSX.Element {
                 <Dropdown>
                   <Dropdown.Button light>{t("lang")}</Dropdown.Button>
                   <Dropdown.Menu onAction={changeLang}>
-                    <Dropdown.Item key="new">New file</Dropdown.Item>
-                    <Dropdown.Item key="copy">Copy link</Dropdown.Item>
+                    <Dropdown.Item key="sv">Svenska</Dropdown.Item>
+                    <Dropdown.Item key="tr">Turkiska</Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
 
