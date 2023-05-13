@@ -3,11 +3,18 @@ import { useQuestionsStore } from "@/stores/questions.store";
 import { Container, Modal, Row, Text } from "@nextui-org/react";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Outlet, useNavigate, useOutlet } from "react-router-dom";
+import {
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  useOutlet,
+} from "react-router-dom";
 import Select, { ActionMeta, SingleValue } from "react-select";
 import { SelectTestCard } from "./components/card";
+import { SystemDown } from "./components/system_down";
 
 export default function MainPage() {
+  const isSystemDown = useLoaderData();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const outlet = useOutlet();
@@ -52,6 +59,10 @@ export default function MainPage() {
     },
     [],
   );
+
+  if (isSystemDown) {
+    return <SystemDown />;
+  }
 
   if (outlet) {
     return <Outlet />;

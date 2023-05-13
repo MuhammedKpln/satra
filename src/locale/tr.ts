@@ -1,6 +1,6 @@
 export default {
   lang: "Türkçe",
-  system_off: "Sistemimiz suan kapali",
+  system_off: "Sistem şu anda kapalıdır.",
   changeLanguage: "İsveççe diline değiştir",
   logout: "Çıkış yap",
   teori: "Sınavı başlat",

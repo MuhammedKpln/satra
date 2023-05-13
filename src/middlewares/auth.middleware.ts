@@ -1,3 +1,4 @@
+import { useAuthService } from "@/services/auth.service";
 import { INITIAL_STATE, LoginState, useAuthStore } from "@/stores/auth.store";
 import { ICookieAuthKeys } from "@/types/auth.types";
 import { getCookie } from "@/utils/cookies";
@@ -5,7 +6,9 @@ import { redirect } from "react-router-dom";
 
 export const APP_MIDDLEWARE = async () => {
   if (getCookie(ICookieAuthKeys.isAuthenticated) != null) {
-    return null;
+    const service = await useAuthService.fetchSystemStatus();
+
+    return service.data.system_off;
   }
 
   //Reset state if cookie does not exists.

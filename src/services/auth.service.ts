@@ -1,6 +1,6 @@
+import { ILogin, ISystemInfo } from "@/types/auth.types";
 import { AxiosResponse } from "axios";
 import { BaseService } from "./base.service";
-import { ILogin } from "@/types/auth.types";
 
 class AuthService extends BaseService {
   login(username: string, password: string): Promise<AxiosResponse<ILogin>> {
@@ -8,6 +8,10 @@ class AuthService extends BaseService {
       username,
       password,
     });
+  }
+
+  fetchSystemStatus(): Promise<AxiosResponse<ISystemInfo>> {
+    return this.get<ISystemInfo>("/systeminfo");
   }
 }
 
