@@ -57,14 +57,23 @@ export default function Component() {
   }, [correctAnswers, finishedQuizzes]);
 
   useEffect(() => {
-    // Fetch questions on mount.
-    fetchQuestions().then(() => {
+    // Check if questions has been requested before, if not request it.
+
+    function init() {
       if (questions) {
         setCurrentQuestion(questions[currentQuestionIndex]);
 
         countdown(50);
       }
-    });
+    }
+
+    if (!questions) {
+      // Question has not been requested. Create new request.
+      fetchQuestions().then(init);
+    } else {
+      // Question has already been requested, initialize it.
+      init();
+    }
   }, []);
 
   useEffect(() => {
