@@ -1,0 +1,22 @@
+
+$shadow: 0 4px 14px 0 rgba(12, 108, 206, 0.23);
+.answer {
+  margin: 1rem;
+  cursor: pointer;
+  display: flex;
+  position: relative;
+  align-items: center;
+  width: 100%;
+  min-height: 64px;
+  line-height: 1.2;
+  color: #142b43;
+  padding: 0 20px;
+  background-color: #fff;
+  border: 2px solid #fff;
+  border-radius: 32px;
+  box-shadow: $shadow;
+
+  &:hover {
+    border: 2px solid #3856be;
+  }
+}

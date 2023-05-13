@@ -1,0 +1,10 @@
+.footer {
+  padding: 5px;
+  text-align: center;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
