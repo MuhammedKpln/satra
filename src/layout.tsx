@@ -2,6 +2,7 @@ import { Container, Dropdown, Navbar, Text, useTheme } from "@nextui-org/react";
 import { Key, useCallback, useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import { FiExternalLink } from "react-icons/fi";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import "./global.css";
 import styles from "./layout.module.css";
@@ -13,6 +14,7 @@ function AppLayout(): JSX.Element {
   const [hideNavbar, setHideNavbar] = useState<boolean>(false);
   const loginState = useAuthStore((state) => state.loginState);
   const authUsername = useAuthStore((state) => state.username);
+  const isStaff = useAuthStore((state) => state.isStaff);
   const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
@@ -43,6 +45,22 @@ function AppLayout(): JSX.Element {
     }
   }, []);
 
+  const userActions = useCallback((key: Key) => {
+    switch (key) {
+      case "panel":
+        if (!isStaff) return;
+
+        window.open(import.meta.env.VITE_PANEL_URL, "_blank");
+        break;
+      case "logout":
+        logout();
+        break;
+
+      default:
+        break;
+    }
+  }, []);
+
   return (
     <div className={styles.wrapper}>
       {!hideNavbar && (
@@ -56,15 +74,26 @@ function AppLayout(): JSX.Element {
 
             {loginState == LoginState.loggedIn ? (
               <Navbar.Content>
-                <Navbar.Link onClick={logout}>{authUsername}</Navbar.Link>
                 <Dropdown>
-                  <Dropdown.Button flat>{t("lang")}</Dropdown.Button>
-                  <Dropdown.Menu
-                    aria-label="Static Actions"
-                    onAction={changeLang}
-                  >
+                  <Dropdown.Button light>{t("lang")}</Dropdown.Button>
+                  <Dropdown.Menu onAction={changeLang}>
                     <Dropdown.Item key="new">New file</Dropdown.Item>
                     <Dropdown.Item key="copy">Copy link</Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+
+                <Dropdown>
+                  <Dropdown.Button shadow>{authUsername}</Dropdown.Button>
+                  <Dropdown.Menu onAction={userActions}>
+                    <Dropdown.Item
+                      key="panel"
+                      icon={<FiExternalLink size={15} />}
+                    >
+                      Panel
+                    </Dropdown.Item>
+                    <Dropdown.Item key="logout" withDivider color="error">
+                      {t("logout")}
+                    </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
               </Navbar.Content>
