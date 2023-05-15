@@ -44,7 +44,18 @@ export default function Component() {
   const [timer, setTimer] = useState<string>("50:00");
   const { theme } = useTheme();
   const navigate = useNavigate();
-  const questionAnswers = useMemo(() => {
+
+  const shouldRenderImage = useMemo<boolean>(() => {
+    if (currentQuestion?.question.image_attr.includes("noimage.jpg")) {
+      return false;
+    }
+
+    return true;
+  }, [currentQuestion]);
+
+  const questionAnswers = useMemo<
+    IAvailableQuestionAnswers[] | undefined
+  >(() => {
     if (!currentQuestion) return;
 
     const questionKeys = Object.keys(currentQuestion!);
@@ -296,6 +307,8 @@ export default function Component() {
     setCurrentQuestion(questions![currentQuestionIndex - 1]);
   }, [currentQuestionIndex, questions]);
 
+  console.log(currentQuestion);
+
   return (
     <>
       <Button
@@ -348,9 +361,12 @@ export default function Component() {
       <Grid.Container gap={2}>
         {currentQuestion && !finishedQuiz && (
           <>
-            <Grid xs={12} justify="center" className={styles.question}>
-              <Image src={currentQuestion.question.image} autoResize />
-            </Grid>
+            {shouldRenderImage && (
+              <Grid xs={12} justify="center" className={styles.question}>
+                <Image src={currentQuestion.question.image_attr} autoResize />
+              </Grid>
+            )}
+
             <Grid xs={12} justify="center" className={styles.question}>
               <Text h4>
                 {decryptText(currentQuestion.question.title_hashed)}

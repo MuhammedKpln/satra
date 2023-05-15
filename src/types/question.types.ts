@@ -17,7 +17,6 @@ export interface IQuestion {
   id: number;
   title_hashed: string;
   description_hashed: string;
-  image: string;
   image_attr: string;
   right_answer: string;
   folder: number;
