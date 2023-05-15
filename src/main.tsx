@@ -25,10 +25,9 @@ i18n.use(initReactI18next).init({
   },
 });
 
-export function lazyLoadRoutes(component: string) {
-  const LazyElement = lazy(() => import(component));
+export function lazyLoadRoutes() {
+  const LazyElement = lazy(() => import("@/pages/slutprov/SlutProv"));
 
-  // Wrapping around the suspense component is mandatory
   return (
     <Suspense fallback="Loading...">
       <LazyElement />
@@ -40,6 +39,7 @@ const router = createBrowserRouter([
   {
     path: RoutePath.Root,
     element: <AppLayout />,
+
     children: [
       {
         path: RoutePath.Root,
@@ -48,7 +48,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: RoutePath.SlutProv,
-            element: lazyLoadRoutes("./pages/slutprov/SlutProv"),
+            element: lazyLoadRoutes(),
           },
         ],
       },
