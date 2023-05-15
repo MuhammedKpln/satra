@@ -172,7 +172,7 @@ export function QuizResultsModal({
                         {e.questionData.question.image && (
                           <Grid xs={12} justify="center">
                             <Image
-                              src={e.questionData.question.image}
+                              src={e.questionData.question.image_attr}
                               autoResize
                             />
                           </Grid>
