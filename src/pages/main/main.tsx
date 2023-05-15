@@ -23,6 +23,7 @@ export default function MainPage() {
     (state) => state.fetchQuestionsFromFolder,
   );
   const fetchQuestions = useQuestionsStore((state) => state.fetchQuestions);
+  const questionLoadingState = useQuestionsStore((state) => state.loadingState);
 
   const folders = useMemo(() => {
     return Array(Number(import.meta.env.VITE_FOLDER_SIZE))
@@ -78,12 +79,15 @@ export default function MainPage() {
             description={t("testDesc")}
             buttonTitle={t("train")}
             onClick={navigateQuizzes}
+            isLoading={false}
           />
+
           <SelectTestCard
             title={t("teoriHeader")}
             description={t("teoriDesc")}
             buttonTitle={t("teori")}
             onClick={navigateFinalQuiz}
+            isLoading={questionLoadingState}
           />
         </Row>
 

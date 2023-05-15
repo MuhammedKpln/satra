@@ -5,6 +5,7 @@ import { devtools } from "zustand/middleware";
 
 interface QuestionsState {
   questions?: IAnswer[];
+  loadingState: boolean;
 
   fetchQuestions: () => Promise<void>;
   fetchQuestionsFromFolder: (folderId: number) => Promise<void>;
@@ -12,13 +13,24 @@ interface QuestionsState {
 
 export const useQuestionsStore = create(
   devtools<QuestionsState>((set) => ({
+    loadingState: false,
     fetchQuestions: async () => {
+      set({
+        loadingState: true,
+      });
       const service = new QuestionsService();
       const questions = await service.fetchQuestions();
 
-      set({
-        questions: questions.data.data,
-      });
+      return new Promise((resolve) =>
+        setTimeout(() => {
+          set({
+            questions: questions.data.data,
+            loadingState: false,
+          });
+
+          resolve();
+        }, 1000),
+      );
     },
     fetchQuestionsFromFolder: async (folderId: number) => {
       const service = new QuestionsService();
