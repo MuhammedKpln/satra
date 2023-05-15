@@ -219,7 +219,7 @@ export default function Component() {
             questionIndex: currentQuestionIndex,
             questionData: currentQuestion!,
             isCorrectAnswer: false,
-            isMarked: false,
+            isMarked: true,
           },
         ]);
       }
@@ -290,6 +290,11 @@ export default function Component() {
   const navigateBack = useCallback(() => {
     navigate("/");
   }, []);
+
+  const prevQuestion = useCallback(() => {
+    setCurrentQuestionIndex(currentQuestionIndex - 1);
+    setCurrentQuestion(questions![currentQuestionIndex - 1]);
+  }, [currentQuestionIndex, questions]);
 
   return (
     <>
@@ -365,9 +370,12 @@ export default function Component() {
             ))}
 
             <Grid xs={12} justify="space-between">
-              <Button onPress={() => null} icon={<IoArrowBack size={20} />}>
-                {t("prevQuestion")}
-              </Button>
+              {currentQuestionIndex !== 0 && (
+                <Button onPress={prevQuestion} icon={<IoArrowBack size={20} />}>
+                  {t("prevQuestion")}
+                </Button>
+              )}
+
               <Button
                 icon={<IoTimeOutline size={20} />}
                 color="warning"
@@ -387,7 +395,7 @@ export default function Component() {
               )}
               <Button
                 iconRight={<IoArrowForward size={20} />}
-                onPress={() => null}
+                onPress={() => jumpToNextQuiz(true)}
               >
                 {t("nextQuestion")}
               </Button>
