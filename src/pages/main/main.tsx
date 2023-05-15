@@ -22,9 +22,10 @@ export default function MainPage() {
   const fetchQuestionsFromFolder = useQuestionsStore(
     (state) => state.fetchQuestionsFromFolder,
   );
+  const fetchQuestions = useQuestionsStore((state) => state.fetchQuestions);
 
   const folders = useMemo(() => {
-    return Array(15)
+    return Array(Number(import.meta.env.VITE_FOLDER_SIZE))
       .fill(1)
       .map((_, index) => {
         return {
@@ -35,9 +36,9 @@ export default function MainPage() {
   }, []);
 
   const navigateFinalQuiz = useCallback(() => {
-    navigate(RoutePath.SlutProv);
-
-    window.console.log(outlet);
+    fetchQuestions().then(() => {
+      navigate(RoutePath.SlutProv);
+    });
   }, []);
 
   const navigateQuizzes = useCallback(() => {
