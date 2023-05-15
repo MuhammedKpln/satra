@@ -169,7 +169,7 @@ export function QuizResultsModal({
                       shadow
                     >
                       <Grid.Container gap={1}>
-                        {e.questionData.question.image && (
+                        {e.questionData.question.image_attr && (
                           <Grid xs={12} justify="center">
                             <Image
                               src={e.questionData.question.image_attr}
