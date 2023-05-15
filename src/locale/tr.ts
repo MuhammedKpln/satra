@@ -33,4 +33,5 @@ export default {
   folder: "Dosya",
   testDesc:
     "Mevcut 1-20 klasör içinde çalışabilirsiniz. Yeterince hissettiğinizde, final sınavını yapabilirsiniz!",
+  finishQuiz: "Testi bitir",
 };

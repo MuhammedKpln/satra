@@ -50,3 +50,8 @@ export interface IMarkedQuizzes {
   questionIndex: number;
   questionData: IAnswer;
 }
+
+export interface IAvailableQuestionAnswers {
+  value: number;
+  label: string;
+}

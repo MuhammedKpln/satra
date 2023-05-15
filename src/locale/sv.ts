@@ -34,4 +34,5 @@ export default {
     "Nu kan du <strong>markera</strong> frågor och <strong>hoppa över</strong> till markerade frågor <strong>när som helst!</strong>",
   markedQuestionsAvailable:
     "Du har kvar markerade frågor som du inte har svarat än.",
+  finishQuiz: "Avsluta provet",
 };

@@ -1,6 +1,11 @@
 import { Answer } from "@/components/answer.component";
 import { useQuestionsStore } from "@/stores/questions.store";
-import { IAnswer, IMarkedQuizzes, IRightAnswers } from "@/types/question.types";
+import {
+  IAnswer,
+  IAvailableQuestionAnswers,
+  IMarkedQuizzes,
+  IRightAnswers,
+} from "@/types/question.types";
 import { decryptText } from "@/utils/decrypt";
 import {
   Button,
@@ -9,10 +14,18 @@ import {
   Image,
   Row,
   Text,
+  Tooltip,
   useTheme,
 } from "@nextui-org/react";
+import { t } from "i18next";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
+import {
+  IoArrowBack,
+  IoArrowForward,
+  IoCheckmarkCircleOutline,
+  IoTimeOutline,
+} from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { QuizResultsModal } from "./components/quiz-results.component";
 import styles from "./slutprov.module.scss";
@@ -31,20 +44,48 @@ export default function Component() {
   const [timer, setTimer] = useState<string>("50:00");
   const { theme } = useTheme();
   const navigate = useNavigate();
+  const questionAnswers = useMemo(() => {
+    if (!currentQuestion) return;
+
+    const questionKeys = Object.keys(currentQuestion!);
+    const questions: IAvailableQuestionAnswers[] = [];
+
+    for (let index = 0; index < questionKeys.length; index++) {
+      let element = questionKeys[index];
+      const value = Object.values(currentQuestion)[index];
+
+      if (element.startsWith("answer")) {
+        element = element.replace("answer", "");
+        element = element.replace("_hashed", "");
+
+        if (value != null) {
+          questions.push({
+            label: value,
+            value: parseInt(element),
+          });
+        }
+      }
+    }
+
+    return questions;
+  }, [currentQuestion]);
 
   const minimumCorrectAnswers = useMemo(() => {
     return finishedQuizzes.length - 2;
   }, [finishedQuizzes]);
+
   const correctAnswers = useMemo(() => {
     return finishedQuizzes.filter(
       (v) => v.isCorrectAnswer === true && v.isMarked === false,
     );
   }, [finishedQuizzes]);
+
   const wrongAnswers = useMemo(() => {
     return finishedQuizzes.filter(
       (v) => v.isCorrectAnswer === false && v.isMarked === false,
     );
   }, [finishedQuizzes]);
+
   const isApproved = useMemo(() => {
     if (correctAnswers.length >= minimumCorrectAnswers) {
       return true;
@@ -52,6 +93,7 @@ export default function Component() {
 
     return false;
   }, [correctAnswers, minimumCorrectAnswers]);
+
   const calculatePercentage = useMemo(() => {
     return Math.round((correctAnswers.length * 100) / finishedQuizzes.length);
   }, [correctAnswers, finishedQuizzes]);
@@ -82,7 +124,6 @@ export default function Component() {
 
   function checkIfQuizFinished(questionIndex: number) {
     if (questionIndex >= questions!.length) {
-      console.log(markedQuizzes.current.length);
       if (markedQuizzes.current.length > 0) {
         // Quiz is finished, but there is marked question available.
         toast.error("You have marked questions available");
@@ -246,27 +287,48 @@ export default function Component() {
     tick();
   }
 
+  const navigateBack = useCallback(() => {
+    navigate("/");
+  }, []);
+
   return (
     <>
-      <Container xs>
+      <Button
+        onPress={navigateBack}
+        rounded
+        auto
+        ghost
+        css={{ borderRadius: "$xl" }}
+      >
+        <IoArrowBack />
+      </Button>
+
+      <Container xl>
         <Row justify="center" wrap="wrap">
           {finishedQuizzes.map((e) => (
-            <div
-              className={
-                e.questionIndex == currentQuestionIndex
-                  ? styles.currentQuizIndicator
-                  : styles.completedQuizIndicator
-              }
-              onClick={() => jumpToQuiz(e.questionIndex)}
-              key={e.questionIndex}
-              style={
-                e.questionIndex == currentQuestionIndex
-                  ? { backgroundColor: theme?.colors.green500.value }
-                  : e.isMarked
-                  ? { backgroundColor: theme?.colors.yellow500.value }
-                  : undefined
-              }
-            />
+            <Tooltip
+              content={decryptText(e.questionData.question.title_hashed)}
+              color="primary"
+              css={undefined}
+              contentColor={undefined}
+            >
+              <div
+                className={
+                  e.questionIndex == currentQuestionIndex
+                    ? styles.currentQuizIndicator
+                    : styles.completedQuizIndicator
+                }
+                onClick={() => jumpToQuiz(e.questionIndex)}
+                key={e.questionIndex}
+                style={
+                  e.questionIndex == currentQuestionIndex
+                    ? { backgroundColor: theme?.colors.green500.value }
+                    : e.isMarked
+                    ? { backgroundColor: theme?.colors.yellow500.value }
+                    : undefined
+                }
+              />
+            </Tooltip>
           ))}
 
           {finishedQuizzes.length == currentQuestionIndex ? (
@@ -292,43 +354,51 @@ export default function Component() {
             <Grid xs={12} justify="center" className={styles.question}>
               <Text h4>{timer}</Text>
             </Grid>
-            <Grid xs={6}>
-              <Answer
-                title={decryptText(currentQuestion.answer1_hashed)}
-                onPress={() => chooseAnswer(1)}
-              />
-            </Grid>
-            <Grid xs={6}>
-              <Answer
-                title={decryptText(currentQuestion.answer2_hashed)}
-                onPress={() => chooseAnswer(2)}
-              />
-            </Grid>
-            <Grid xs={6}>
-              <Answer
-                title={decryptText(currentQuestion.answer3_hashed)}
-                onPress={() => chooseAnswer(3)}
-              />
-            </Grid>
-            <Grid xs={6}>
-              <Answer
-                title={decryptText(currentQuestion.answer4_hashed)}
-                onPress={() => chooseAnswer(4)}
-              />
-            </Grid>
 
-            <Button onPress={markQuizForLater}>Mark question</Button>
+            {questionAnswers?.map((e) => (
+              <Grid xs={6} key={e.value}>
+                <Answer
+                  title={decryptText(e.label)}
+                  onPress={() => chooseAnswer(e.value)}
+                />
+              </Grid>
+            ))}
 
-            {finishedWithMarkedQuestions && (
-              <Button onPress={closeQuiz}>Finish</Button>
-            )}
+            <Grid xs={12} justify="space-between">
+              <Button onPress={() => null} icon={<IoArrowBack size={20} />}>
+                {t("prevQuestion")}
+              </Button>
+              <Button
+                icon={<IoTimeOutline size={20} />}
+                color="warning"
+                onPress={markQuizForLater}
+              >
+                {t("markQuestion")}
+              </Button>
+
+              {finishedWithMarkedQuestions && (
+                <Button
+                  icon={<IoCheckmarkCircleOutline size={20} />}
+                  color="success"
+                  onPress={closeQuiz}
+                >
+                  {t("finishQuiz")}
+                </Button>
+              )}
+              <Button
+                iconRight={<IoArrowForward size={20} />}
+                onPress={() => null}
+              >
+                {t("nextQuestion")}
+              </Button>
+            </Grid>
           </>
         )}
       </Grid.Container>
 
       <QuizResultsModal
         isVisible={finishedQuiz}
-        onCloseHandler={() => navigate("/")}
+        onCloseHandler={navigateBack}
         correctAnswers={correctAnswers}
         wrongAnswers={wrongAnswers}
         isApproved={isApproved}

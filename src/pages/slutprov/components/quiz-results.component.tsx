@@ -184,24 +184,31 @@ export function QuizResultsModal({
                             isCorrect={correctAnswer(1, e)!}
                           />
                         </Grid>
-                        <Grid xs={12}>
-                          <QuizResultsAnswer
-                            title={decryptText(e.questionData.answer2_hashed)}
-                            isCorrect={correctAnswer(2, e)!}
-                          />
-                        </Grid>
-                        <Grid xs={12}>
-                          <QuizResultsAnswer
-                            title={decryptText(e.questionData.answer3_hashed)}
-                            isCorrect={correctAnswer(3, e)!}
-                          />
-                        </Grid>
-                        <Grid xs={12}>
-                          <QuizResultsAnswer
-                            title={decryptText(e.questionData.answer4_hashed)}
-                            isCorrect={correctAnswer(4, e)!}
-                          />
-                        </Grid>
+
+                        {e.questionData.answer2_hashed && (
+                          <Grid xs={12}>
+                            <QuizResultsAnswer
+                              title={decryptText(e.questionData.answer2_hashed)}
+                              isCorrect={correctAnswer(2, e)!}
+                            />
+                          </Grid>
+                        )}
+                        {e.questionData.answer3_hashed && (
+                          <Grid xs={12}>
+                            <QuizResultsAnswer
+                              title={decryptText(e.questionData.answer3_hashed)}
+                              isCorrect={correctAnswer(3, e)!}
+                            />
+                          </Grid>
+                        )}
+                        {e.questionData.answer4_hashed && (
+                          <Grid xs={12}>
+                            <QuizResultsAnswer
+                              title={decryptText(e.questionData.answer4_hashed)}
+                              isCorrect={correctAnswer(4, e)!}
+                            />
+                          </Grid>
+                        )}
                       </Grid.Container>
                     </Collapse>
                   ))}
