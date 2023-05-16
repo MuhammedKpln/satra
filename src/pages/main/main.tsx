@@ -1,6 +1,7 @@
+import useCheckMobileScreen from "@/hooks/useCheckScreenWidth";
 import { RoutePath } from "@/routes";
 import { useQuestionsStore } from "@/stores/questions.store";
-import { Container, Modal, Row, Text } from "@nextui-org/react";
+import { Grid, Modal, Text } from "@nextui-org/react";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -24,6 +25,7 @@ export default function MainPage() {
   );
   const fetchQuestions = useQuestionsStore((state) => state.fetchQuestions);
   const questionLoadingState = useQuestionsStore((state) => state.loadingState);
+  const isMobile = useCheckMobileScreen();
 
   const folders = useMemo(() => {
     return Array(Number(import.meta.env.VITE_FOLDER_SIZE))
@@ -72,8 +74,8 @@ export default function MainPage() {
 
   return (
     <>
-      <Container direction="row">
-        <Row justify="space-around">
+      <Grid.Container justify="space-around" gap={2}>
+        <Grid md={6}>
           <SelectTestCard
             title={t("testHeader")}
             description={t("testDesc")}
@@ -81,7 +83,8 @@ export default function MainPage() {
             onClick={navigateQuizzes}
             isLoading={false}
           />
-
+        </Grid>
+        <Grid md={6}>
           <SelectTestCard
             title={t("teoriHeader")}
             description={t("teoriDesc")}
@@ -89,16 +92,16 @@ export default function MainPage() {
             onClick={navigateFinalQuiz}
             isLoading={questionLoadingState}
           />
-        </Row>
+        </Grid>
 
         <Modal
           open={isModalOpen}
           onClose={onCloseHandler}
           closeButton
-          blur
-          width="50vw"
+          blur={!isMobile}
+          fullScreen={isMobile}
           css={{
-            height: "40vw",
+            height: !isMobile ? "60vw" : undefined,
           }}
         >
           <Modal.Header>
@@ -109,7 +112,7 @@ export default function MainPage() {
             <Select options={folders} onChange={onSelectFolder} />
           </Modal.Body>
         </Modal>
-      </Container>
+      </Grid.Container>
     </>
   );
 }
