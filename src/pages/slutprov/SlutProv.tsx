@@ -385,7 +385,7 @@ export default function Component() {
               </Grid>
             ))}
 
-            <Grid xs={12} justify="space-between">
+            <Grid sm={12} justify="space-between">
               {currentQuestionIndex !== 0 && (
                 <Button onPress={prevQuestion} icon={<IoArrowBack size={20} />}>
                   {t("prevQuestion")}
