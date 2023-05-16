@@ -20,21 +20,24 @@ export default function Nav({ hideNavbar }: IProps) {
     i18n.changeLanguage(key as string);
   }, []);
 
-  const userActions = useCallback((key: Key) => {
-    switch (key) {
-      case "panel":
-        if (!isStaff) return;
+  const userActions = useCallback(
+    (key: Key) => {
+      switch (key) {
+        case "panel":
+          if (!isStaff) return;
 
-        window.open(import.meta.env.VITE_PANEL_URL, "_blank");
-        break;
-      case "logout":
-        logout();
-        break;
+          window.open(import.meta.env.VITE_PANEL_URL, "_blank");
+          break;
+        case "logout":
+          logout();
+          break;
 
-      default:
-        break;
-    }
-  }, []);
+        default:
+          break;
+      }
+    },
+    [isStaff],
+  );
 
   return (
     <>
