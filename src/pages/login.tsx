@@ -19,6 +19,8 @@ export default function LoginPage() {
       toast.success("Basarili");
       navigate("/");
       return;
+    } else {
+      toast.error("Kullanıcı adı veya şifre hatalı");
     }
   }
 
