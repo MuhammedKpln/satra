@@ -17,8 +17,8 @@ import { RoutePath } from "./routes";
 
 i18n.use(initReactI18next).init({
   resources: locales,
-  lng: locales.tr.lang,
-  fallbackLng: locales.sv.lang,
+  lng: locales.sv.lang,
+  fallbackLng: locales.tr.lang,
 
   interpolation: {
     escapeValue: false,
